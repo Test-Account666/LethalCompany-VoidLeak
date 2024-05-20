@@ -2,15 +2,16 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
+        <Product>VoidLeak</Product>
+        <AssemblyName>TestAccount666.VoidLeak</AssemblyName>
         <Description>AssetWarehouse had a breach. (BONELAB/BONEWORKS scrap items)</Description>
+        <Source>https://github.com/Test-Account666/LethalCompany-VoidLeak/</Source>
         <Version>1.1.0</Version>
+        <AssemblyVersion>1.1.0</AssemblyVersion>
+        <FileVersion>1.1.0</FileVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
         <Company>SoulWithMae</Company>
-        <AssemblyVersion>1.1.0</AssemblyVersion>
-        <FileVersion>1.1.0</FileVersion>
-        <Product>VoidLeak</Product>
-        <AssemblyName>TestAccount666.VoidLeak</AssemblyName>
     </PropertyGroup>
 
     <!-- Project Properties -->
@@ -22,21 +23,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="NuGet.Config" />
-      <None Remove="References\**" />
-      <None Remove=".gitignore" />
-      <None Remove="Staging\**" />
+        <None Remove="NuGet.Config"/>
+        <None Remove="References\**"/>
+        <None Remove=".gitignore"/>
+        <None Remove="Staging\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="References\**" />
-      <Compile Remove="Staging\**" />
+        <Compile Remove="References\**"/>
+        <Compile Remove="Staging\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="References\**" />
-      <EmbeddedResource Remove="Staging\**" />
-      <None Remove="Resources\Assets.pack" />
+        <EmbeddedResource Remove="References\**"/>
+        <EmbeddedResource Remove="Staging\**"/>
+        <None Remove="Resources\Assets.pack"/>
     </ItemGroup>
 
     <!-- Enable Nullable for better IDE null-checking -->
@@ -74,7 +75,7 @@
         <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" PrivateAssets="all"/>
         <PackageReference Include="BepInEx.Core" Version="5.*" PrivateAssets="all"/>
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" PrivateAssets="all"/>
-        <PackageReference Include="Evaisa.LethalLib" Version="0.15.1" />
+        <PackageReference Include="Evaisa.LethalLib" Version="0.15.1"/>
         <PackageReference Include="LethalCompany.GameLibs.Steam" Version="*-*" Publicize="true" PrivateAssets="all"/>
         <PackageReference Include="UnityEngine.Modules" Version="2022.3.9" IncludeAssets="compile" PrivateAssets="all"/>
         <PackageReference Include="TeamBMX.LobbyCompatibility" Version="1.*" PrivateAssets="all"/>
@@ -85,6 +86,10 @@
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\..\VoidLeaks\Assets\LethalCompany\Mods&quot;" />
+        <!-- Copy file on Windows -->
+        <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\..\VoidLeaks\Assets\LethalCompany\Mods&quot;" Condition="'$(OS)' == 'Windows_NT'"/>
+
+        <!-- Copy file on Unix/Linux -->
+        <Exec Command="cp -f $(TargetPath) $(ProjectDir)../../VoidLeaks/Assets/LethalCompany/Mods/" Condition="'$(OS)' == 'Unix'"/>
     </Target>
 </Project>
