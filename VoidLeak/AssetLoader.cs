@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using LethalLib.Modules;
 using UnityEngine;
 
@@ -15,79 +15,115 @@ public static class AssetLoader {
     public static void LoadBundle() {
         var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         if (assemblyLocation == null) {
-            Plugin.logger.LogError("Failed to load asset bundle.");
-            Plugin.logger.LogError("Check if the asset bundle is in the same directory as the plugin.");
+            Plugin.logger.LogError("Failed to determine assembly location.");
             return;
         }
 
-        _assets ??= AssetBundle.LoadFromFile(Path.Combine(assemblyLocation, "voidleak"));
+        var assetBundlePath = Path.Combine(assemblyLocation, "voidleak");
+        if (!File.Exists(assetBundlePath)) {
+            Plugin.logger.LogFatal(new StringBuilder($"Asset bundle not found at {assetBundlePath}.")
+                                   .Append(" ")
+                                   .Append("Check if the asset bundle is in the same directory as the plugin.")
+                                   .ToString());
+            return;
+        }
+
+        try {
+            _assets = AssetBundle.LoadFromFile(assetBundlePath);
+        } catch (Exception ex) {
+            Plugin.logger.LogError($"Failed to load asset bundle: {ex.Message}");
+        }
     }
 
-    public static IEnumerator LoadItems() {
-        if (_assets is null)
-            yield break;
 
-        if (Plugin.configFile is null)
-            yield break;
+    public static void LoadItems() {
+        if (_assets is null || Plugin.configFile is null)
+            return;
 
         var allAssets = _assets.LoadAllAssets<ItemWithDefaultWeight>();
 
-        var selectableLevels = Resources.FindObjectsOfTypeAll<SelectableLevel>();
-
         var allItemsWithDefaultWeight = allAssets.OfType<ItemWithDefaultWeight>();
 
-        var itemsWithDefaultWeight = allItemsWithDefaultWeight as ItemWithDefaultWeight[] ?? allItemsWithDefaultWeight.ToArray();
+        var itemsWithDefaultWeight = allItemsWithDefaultWeight.ToList();
 
-        RegisterDefaults(itemsWithDefaultWeight);
-
-        RegisterBasedOnMoons(itemsWithDefaultWeight);
+        RegisterAllScrap(itemsWithDefaultWeight);
 
         Plugin.logger.LogInfo("All items were registered :)");
     }
 
-    private static void RegisterBasedOnMoons(ItemWithDefaultWeight[] itemsWithDefaultWeight) {
+    private static void RegisterAllScrap(List<ItemWithDefaultWeight> itemsWithDefaultWeight) {
         var configFile = Plugin.configFile;
 
         if (configFile is null)
             return;
 
-        foreach (var levelType in Enum.GetValues(typeof(Levels.LevelTypes)).OfType<Levels.LevelTypes>()) {
-            if (levelType is Levels.LevelTypes.None or Levels.LevelTypes.All or Levels.LevelTypes.Vanilla)
-                continue;
-
-            foreach (var item in itemsWithDefaultWeight) {
-                var levelWeight = configFile.Bind(levelType.ToString(), $"{item.item.itemName} Spawn Weight",
-                                                  item.defaultWeight,
-                                                  $"Defines the {item.item.itemName} spawn weight on Planet {
-                                                      levelType.ToString()[..(levelType.ToString().Length - 5)]}");
-
-                Items.RegisterScrap(item.item, levelWeight.Value, levelType);
-            }
-        }
+        itemsWithDefaultWeight.ForEach(RegisterScrap);
     }
 
-    private static void RegisterDefaults(ItemWithDefaultWeight[] itemsWithDefaultWeight) {
+    private static void RegisterScrap(ItemWithDefaultWeight item) {
         var configFile = Plugin.configFile;
 
         if (configFile is null)
             return;
 
-        foreach (var item in itemsWithDefaultWeight) {
-            var defaultSpawnWeight = configFile.Bind("1. Default", $"1. {item.item.itemName} Spawn Weight", item.defaultWeight,
-                                                     "Defines the default spawn weight");
+        var canItemSpawn = configFile.Bind($"{item.item.itemName}", "1. Enabled", true,
+                                           $"If false, {item.item.itemName
+                                           } will not be registered. This is different from a spawn weight of 0!");
 
-            var maxValue = configFile.Bind("1. Default", $"2. {item.item.itemName} Maximum Value", item.item.maxValue,
-                                           "Defines the maximum scrap value.");
+        if (!canItemSpawn.Value)
+            return;
 
-            var minValue = configFile.Bind("1. Default", $"3. {item.item.itemName} Minimum Value", item.item.minValue,
-                                           "Defines the minimum scrap value.");
+        var maxValue = configFile.Bind($"{item.item.itemName}", "2. Maximum Value", item.item.maxValue,
+                                       $"Defines the maximum scrap value for {item.item.itemName}.");
 
+        var minValue = configFile.Bind($"{item.item.itemName}", "3. Minimum Value", item.item.minValue,
+                                       $"Defines the minimum scrap value for {item.item.itemName}.");
 
-            item.defaultWeight = defaultSpawnWeight.Value;
-            item.item.maxValue = maxValue.Value;
-            item.item.minValue = minValue.Value;
+        var configMoonRarity =
+            configFile.Bind($"{item.item.itemName}", "4. Moon Spawn Weight", $"Vanilla:{item.defaultWeight}, Modded:{item.defaultWeight}",
+                            $"Defines the spawn weight per moon. e.g. Assurance:{item.defaultWeight}");
 
-            NetworkPrefabs.RegisterNetworkPrefab(item.item.spawnPrefab);
+        item.item.maxValue = maxValue.Value;
+        item.item.minValue = minValue.Value;
+
+        var parsedConfig = configMoonRarity.Value.ParseConfig();
+
+        Items.RegisterScrap(item.item, parsedConfig.spawnRateByLevelType, parsedConfig.spawnRateByCustomLevelType);
+
+        NetworkPrefabs.RegisterNetworkPrefab(item.item.spawnPrefab);
+    }
+
+    private static (Dictionary<Levels.LevelTypes, int> spawnRateByLevelType, Dictionary<string, int> spawnRateByCustomLevelType)
+        ParseConfig(this string configMoonRarity) {
+        Dictionary<Levels.LevelTypes, int> spawnRateByLevelType = [
+        ];
+        Dictionary<string, int> spawnRateByCustomLevelType = [
+        ];
+
+        foreach (var entry in configMoonRarity.Split(',').Select(configEntry => configEntry.Trim())) {
+            if (string.IsNullOrWhiteSpace(entry))
+                continue;
+
+            string[] entryParts = entry.Split(':');
+
+            if (entryParts.Length != 2)
+                continue;
+
+            var name = entryParts[0];
+
+            if (!int.TryParse(entryParts[1], out var spawnWeight))
+                continue;
+
+            if (Enum.TryParse<Levels.LevelTypes>(name, true, out var levelType)) {
+                spawnRateByLevelType[levelType] = spawnWeight;
+                Plugin.logger.LogInfo($"Registered weight for level type {levelType} to {spawnWeight}");
+                continue;
+            }
+
+            spawnRateByCustomLevelType[name] = spawnWeight;
+            Plugin.logger.LogInfo($"Registered weight for custom level type {name} to {spawnWeight}");
         }
+
+        return (spawnRateByLevelType, spawnRateByCustomLevelType);
     }
 }
