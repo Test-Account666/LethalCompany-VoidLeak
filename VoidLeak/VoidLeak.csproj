@@ -8,7 +8,7 @@
         <Source>https://github.com/Test-Account666/LethalCompany-VoidLeak/</Source>
         <Version>1.1.0</Version>
         <AssemblyVersion>1.1.0</AssemblyVersion>
-        <FileVersion>1.1.0</FileVersion>
+        <FileVersion>1.2.0</FileVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
         <Company>SoulWithMae</Company>
