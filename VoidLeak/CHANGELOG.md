@@ -1,5 +1,9 @@
 # VoidLeak Mod
 
+## 1.2.1
+
+\* Fix config resetting itself<br>
+
 ## 1.2.0
 
 \+ Added custom grab message for Spawn Gun<br>
