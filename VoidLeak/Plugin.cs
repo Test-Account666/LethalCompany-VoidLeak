@@ -17,6 +17,7 @@ public class Plugin : BaseUnityPlugin {
     public static ConfigFile? configFile;
     private static Harmony? _harmony;
     private static readonly Version _CurrentConfigVersion = "2.0.0".ParseVersion();
+    private readonly ConfigDefinition _configVersionDefinition = new("0. Config Version", "Do not touch!");
 
     private void Awake() {
         logger = Logger;
@@ -52,21 +53,15 @@ public class Plugin : BaseUnityPlugin {
     }
 
     private Version GetConfigVersion() {
-        var configVersionDefinition = new ConfigDefinition("0. Config Version", "Do not touch!");
+        var configVersionEntry = Config.Bind(_configVersionDefinition, "1.0.0",
+                                             new("The config version. Might reset config, if touched!"));
 
-        var useConfigEntry = Config.ContainsKey(configVersionDefinition);
-
-        var configVersionEntry = GetConfigVersionEntry();
-
-        var configVersion = useConfigEntry? configVersionEntry.Value.ParseVersion() : "1.0.0".ParseVersion();
-        return configVersion;
+        return configVersionEntry.Value.ParseVersion();
     }
 
-    private ConfigEntry<string> GetConfigVersionEntry() {
-        var configVersionDefinition = new ConfigDefinition("0. Config Version", "Do not touch!");
-        return Config.Bind(configVersionDefinition, _CurrentConfigVersion.ToString(),
-                           new("The config version. Might reset config, if touched!"));
-    }
+    private void SetConfigVersionEntry() =>
+        Config.Bind(_configVersionDefinition, _CurrentConfigVersion.ToString(),
+                    new("The config version. Might reset config, if touched!"));
 
     private void CompareConfigVersion() {
         try {
@@ -81,7 +76,7 @@ public class Plugin : BaseUnityPlugin {
                 case < 0:
                     Logger.LogWarning("Found an old config! Config will be reset!");
                     Config.Clear();
-                    GetConfigVersionEntry();
+                    SetConfigVersionEntry();
                     Config.Save();
                     CompareConfigVersion();
                     return;

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace VoidLeak;
 
@@ -9,7 +10,7 @@ public class Version(int major, int minor, int patch) : IComparable<Version> {
 
     public int CompareTo(Version? other) {
         if (other is null)
-            throw new ArgumentNullException(nameof(other) + " cannot be null!");
+            throw new ArgumentNullException(nameof(other), "Cannot compare to null!");
 
         if (ReferenceEquals(this, other))
             return 0;
@@ -17,10 +18,10 @@ public class Version(int major, int minor, int patch) : IComparable<Version> {
         var majorComparison = _major.CompareTo(other._major);
 
         switch (majorComparison) {
-            case > 0:
+            case < 0:
                 Plugin.logger.LogDebug($"Other major was bigger: {_major} -> {other._major}");
                 break;
-            case < 0:
+            case > 0:
                 Plugin.logger.LogDebug($"Other major was smaller: {_major} -> {other._major}");
                 break;
         }
@@ -32,10 +33,10 @@ public class Version(int major, int minor, int patch) : IComparable<Version> {
         var minorComparison = _minor.CompareTo(other._minor);
 
         switch (minorComparison) {
-            case > 0:
+            case < 0:
                 Plugin.logger.LogDebug($"Other minor was bigger: {_major} -> {other._major}");
                 break;
-            case < 0:
+            case > 0:
                 Plugin.logger.LogDebug($"Other minor was smaller: {_minor} -> {other._minor}");
                 break;
         }
@@ -46,10 +47,10 @@ public class Version(int major, int minor, int patch) : IComparable<Version> {
         var patchComparison = _patch.CompareTo(other._patch);
 
         switch (patchComparison) {
-            case > 0:
+            case < 0:
                 Plugin.logger.LogDebug($"Other patch was bigger: {_patch} -> {other._patch}");
                 break;
-            case < 0:
+            case > 0:
                 Plugin.logger.LogDebug($"Other patch was smaller: {_patch} -> {other._patch}");
                 break;
         }
@@ -64,9 +65,18 @@ internal static class VersionParser {
     public static Version ParseVersion(this string versionString) {
         var splitString = versionString.Split(".");
 
-        var major = splitString.Length >= 1? int.Parse(splitString[0]) : 0;
-        var minor = splitString.Length >= 2? int.Parse(splitString[1]) : 0;
-        var patch = splitString.Length >= 3? int.Parse(splitString[2]) : 0;
+        if (splitString is not {
+                Length: 3,
+            }) throw new ArgumentException("Version string must contain at three segments and cannot be null.", nameof(versionString));
+
+        if (!int.TryParse(splitString[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out var major))
+            throw new FormatException($"Invalid format in version string: {versionString}");
+
+        if (!int.TryParse(splitString[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var minor))
+            throw new FormatException($"Invalid format in version string: {versionString}");
+
+        if (!int.TryParse(splitString[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out var patch))
+            throw new FormatException($"Invalid format in version string: {versionString}");
 
         return new(major, minor, patch);
     }
