@@ -7,7 +7,7 @@
         <Description>AssetWarehouse had a breach. (BONELAB/BONEWORKS scrap items)</Description>
         <Source>https://github.com/Test-Account666/LethalCompany-VoidLeak/</Source>
         <Version>1.2.1</Version>
-        <AssemblyVersion>1.2.1</AssemblyVersion>
+        <AssemblyVersion>1.2.2</AssemblyVersion>
         <FileVersion>1.2.1</FileVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
