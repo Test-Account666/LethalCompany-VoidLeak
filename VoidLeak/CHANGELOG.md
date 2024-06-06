@@ -1,5 +1,9 @@
 # VoidLeak Mod
 
+## 1.2.2
+
+\* Buff the Crowbar again<br>
+
 ## 1.2.1
 
 \* Fix config resetting itself<br>
