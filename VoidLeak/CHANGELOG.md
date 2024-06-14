@@ -1,5 +1,10 @@
 # VoidLeak Mod
 
+## 1.3.0
+
+\+ Added Balloon Gun (Doesn't do anything)<br>
+\+ Added IceAxe (Basically a buffed Knife)<br>
+
 ## 1.2.2
 
 \* Buff the Crowbar again<br>
