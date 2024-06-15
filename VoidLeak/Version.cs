@@ -9,11 +9,9 @@ public class Version(int major, int minor, int patch) : IComparable<Version> {
     private readonly int _patch = patch;
 
     public int CompareTo(Version? other) {
-        if (other is null)
-            throw new ArgumentNullException(nameof(other), "Cannot compare to null!");
+        if (other is null) throw new ArgumentNullException(nameof(other), "Cannot compare to null!");
 
-        if (ReferenceEquals(this, other))
-            return 0;
+        if (ReferenceEquals(this, other)) return 0;
 
         var majorComparison = _major.CompareTo(other._major);
 
@@ -41,8 +39,7 @@ public class Version(int major, int minor, int patch) : IComparable<Version> {
                 break;
         }
 
-        if (minorComparison != 0)
-            return minorComparison;
+        if (minorComparison != 0) return minorComparison;
 
         var patchComparison = _patch.CompareTo(other._patch);
 

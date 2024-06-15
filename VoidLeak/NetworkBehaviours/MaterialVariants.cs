@@ -47,8 +47,7 @@ public class MaterialVariants : NetworkBehaviour {
         foreach (var renderer in meshRenderers) {
             renderer.material = itemData.materialVariants[materialVariant];
 
-            if (!changeScanNodeText)
-                continue;
+            if (!changeScanNodeText) continue;
 
             scanNodeProperties.headerText = scanNodeText[materialVariant];
         }

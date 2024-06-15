@@ -15,18 +15,14 @@ public class SoupBehaviour : NetworkBehaviour {
     [SerializeField]
     public AudioSource collideAudioSource;
 
-    private void OnTriggerEnter(Collider other) =>
-        HandleCollision(other);
+    private void OnTriggerEnter(Collider other) => HandleCollision(other);
 
-    private void OnTriggerStay(Collider other) =>
-        HandleCollision(other);
+    private void OnTriggerStay(Collider other) => HandleCollision(other);
 
     private void HandleCollision(Collider other) {
-        if (other.attachedRigidbody == rigidBody)
-            return;
+        if (other.attachedRigidbody == rigidBody) return;
 
-        if (!other.CompareTag("PlayerBody") && !other.CompareTag("Player"))
-            return;
+        if (!other.CompareTag("PlayerBody") && !other.CompareTag("Player")) return;
 
         if (!collideAudioSource.isPlaying)
             collideAudioSource.Play();

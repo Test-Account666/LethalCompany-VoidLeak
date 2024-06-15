@@ -107,8 +107,7 @@ public class SpawnGun : GrabbableObject {
                 meshRenderer.enabled = active && notEmpty;
         }
 
-        if (playerHeldBy is null)
-            return;
+        if (playerHeldBy is null) return;
 
         playerHeldBy.equippedUsableItemQE = active;
     }
