@@ -1,5 +1,10 @@
 # VoidLeak Mod
 
+## 1.4.0
+
+\+ Added Dev Manipulator, which is a very powerful item. Use with caution!<br>
+\+ Added TestAccountCore as a dependency to reduce some code duplication across projects<br>
+
 ## 1.3.0
 
 \+ Added Balloon Gun (Doesn't do anything)<br>
