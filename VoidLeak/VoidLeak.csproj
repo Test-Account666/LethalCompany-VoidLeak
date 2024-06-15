@@ -71,18 +71,32 @@
 
     <!-- Primary Package References -->
     <ItemGroup>
-        <PackageReference Include="BepInEx.Analyzers" Version="1.0.8" PrivateAssets="all" />
-        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
-        <PackageReference Include="BepInEx.Core" Version="5.4.21" PrivateAssets="all" />
-        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.1.0" PrivateAssets="all" />
+        <PackageReference Include="BepInEx.Analyzers" Version="1.0.8" PrivateAssets="all"/>
+        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all"/>
+        <PackageReference Include="BepInEx.Core" Version="5.4.21" PrivateAssets="all"/>
+        <PackageReference Include="BepInEx.PluginInfoProps" Version="2.1.0" PrivateAssets="all"/>
         <PackageReference Include="Evaisa.LethalLib" Version="0.15.1"/>
-        <PackageReference Include="LethalCompany.GameLibs.Steam" Version="50.0.1-ngd.0" />
+        <PackageReference Include="LethalCompany.GameLibs.Steam" Version="50.0.1-ngd.0"/>
         <PackageReference Include="UnityEngine.Modules" Version="2022.3.9" IncludeAssets="compile" PrivateAssets="all"/>
-        <PackageReference Include="TeamBMX.LobbyCompatibility" Version="1.1.0" PrivateAssets="all" />
+        <PackageReference Include="TeamBMX.LobbyCompatibility" Version="1.1.0" PrivateAssets="all"/>
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Evaisa.NetcodePatcher.MSBuild" Version="3.3.4" PrivateAssets="all"/>
+    </ItemGroup>
+    <ItemGroup>
+        <NetcodePatch Include="$(TargetPath)"/>
+    </ItemGroup>
+
+    <!-- My library containing some common code I use -->
+    <ItemGroup>
+        <Reference Include="TestAccount666.TestAccountCore">
+            <HintPath>..\dependencies\TestAccount666.TestAccountCore.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">

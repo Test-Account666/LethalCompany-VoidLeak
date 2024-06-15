@@ -4,24 +4,26 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using UnityEngine;
+using LobbyCompatibility.Enums;
+using TestAccountCore;
+using TestAccountCore.Dependencies;
+using static TestAccountCore.Netcode;
 
 namespace VoidLeak;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+[BepInDependency("TestAccount666.TestAccountCore", "1.0.0")]
 [BepInDependency("evaisa.lethallib")]
 [BepInDependency("imabatby.lethallevelloader", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("BMX.LobbyCompatibility", BepInDependency.DependencyFlags.SoftDependency)]
 public class Plugin : BaseUnityPlugin {
     public static ManualLogSource logger = null!;
-    public static ConfigFile? configFile;
     private static Harmony? _harmony;
     private static readonly Version _CurrentConfigVersion = "2.0.0".ParseVersion();
     private readonly ConfigDefinition _configVersionDefinition = new("0. Config Version", "Do not touch!");
 
     private void Awake() {
         logger = Logger;
-        configFile = Config;
 
         _harmony ??= new(MyPluginInfo.PLUGIN_GUID);
 
@@ -29,25 +31,19 @@ public class Plugin : BaseUnityPlugin {
 
         if (DependencyChecker.IsLobbyCompatibilityInstalled()) {
             logger.LogInfo("Found LobbyCompatibility Mod, initializing support :)");
-            LobbyCompatibilitySupport.Initialize();
+            LobbyCompatibilitySupport.Initialize(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_VERSION,
+                                                 CompatibilityLevel.Everyone, VersionStrictness.Minor);
         }
 
-        // This is needed for Netcode. Without this code, RPC methods won't work
-        var types = Assembly.GetExecutingAssembly().GetTypes();
-        foreach (var type in types) {
-            var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-            foreach (var method in methods) {
-                var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
-                if (attributes.Length <= 0)
-                    continue;
+        var executingAssembly = Assembly.GetExecutingAssembly();
 
-                method.Invoke(null, null);
-            }
-        }
+        ExecuteNetcodePatcher(executingAssembly);
 
-        AssetLoader.LoadBundle();
+        AssetLoader.LoadBundle(executingAssembly, "voidleak");
         logger.LogInfo("Loaded asset bundle. Registering items.");
-        AssetLoader.LoadItems();
+        AssetLoader.LoadItems(Config);
+
+        DevGunConfig.Initialize(Config);
 
         logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded, version {MyPluginInfo.PLUGIN_VERSION}");
     }
