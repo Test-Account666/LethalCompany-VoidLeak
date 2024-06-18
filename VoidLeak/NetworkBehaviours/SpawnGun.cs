@@ -30,23 +30,23 @@ public class SpawnGun : GrabbableObject {
 
     public override void ItemActivate(bool used, bool buttonDown = true) {
         base.ItemActivate(used, buttonDown);
-        if (GameNetworkManager.Instance.localPlayerController is null)
-            return;
 
-        if (insertedBattery.charge <= 0) {
-            missFireAudio.Play();
-            SetActive(true);
-            return;
-        }
+        if (playerHeldBy is null) return;
 
-        UseSpawnGunServerRpc();
+        if (playerHeldBy != GameNetworkManager.Instance.localPlayerController) return;
 
-        if (insertedBattery.charge <= 0) {
-            SetActive(true);
-            return;
-        }
+        if (!IsHost) ShootSpawnGunServerRpc();
+        else ShootSpawnGunClientRpc();
 
-        insertedBattery.charge -= 0.1f;
+        if (insertedBattery.charge <= 0) return;
+
+        var position = firePoint.position + firePoint.forward * raycastDistance;
+
+        var ray = new Ray(firePoint.position, firePoint.forward);
+        if (Physics.Raycast(ray, out var hit, raycastDistance)) position = hit.point;
+
+        if (!IsHost) UseSpawnGunServerRpc(position);
+        else SpawnSoupClientRpc(position);
     }
 
     public override void ChargeBatteries() {
@@ -55,25 +55,46 @@ public class SpawnGun : GrabbableObject {
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void UseSpawnGunServerRpc() {
-        UseSpawnGunClientRpc();
+    private void UseSpawnGunServerRpc(Vector3 position) {
+        SpawnSoupClientRpc(position);
+    }
 
-        var ray = new Ray(firePoint.position, firePoint.forward);
-        if (!Physics.Raycast(ray, out var hit, raycastDistance))
-            return;
+    [ClientRpc]
+    private void SpawnSoupClientRpc(Vector3 position) {
+        var soupObject = Instantiate(spawnObject, position, Quaternion.identity);
 
-        var soupObject = Instantiate(spawnObject, hit.point, Quaternion.identity);
+        insertedBattery.charge -= 0.1f;
+
+        if (insertedBattery.charge <= 0) SetActive(false);
+
+        if (!IsHost) return;
 
         var networkObject = soupObject.GetComponent<NetworkObject>();
 
         networkObject.Spawn();
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void ShootSpawnGunServerRpc() {
+        ShootSpawnGunClientRpc();
+    }
+
     [ClientRpc]
-    private void UseSpawnGunClientRpc() {
+    private void ShootSpawnGunClientRpc() {
+        if (insertedBattery.charge <= 0) {
+            missFireAudio.Play();
+            SetActive(false);
+            return;
+        }
+
         animator.SetTrigger(_Shoot);
 
         spawnAudio.Play();
+    }
+
+    public override void UseUpBatteries() {
+        base.UseUpBatteries();
+        SetActive(false);
     }
 
     public override void DiscardItem() {
@@ -88,27 +109,37 @@ public class SpawnGun : GrabbableObject {
 
     public override void GrabItem() {
         base.GrabItem();
+        if (insertedBattery.charge <= 0) {
+            SetActive(false);
+            return;
+        }
+
         SetActive(true);
     }
 
     public override void EquipItem() {
         base.EquipItem();
+        if (insertedBattery.charge <= 0) {
+            SetActive(false);
+            return;
+        }
+
         SetActive(true);
     }
 
     private void SetActive(bool active) {
-        var notEmpty = insertedBattery.charge > 0;
+        active = active && playerHeldBy is not null;
 
-        if (laser.activeSelf != (active && notEmpty)) {
-            laser.SetActive((active && notEmpty));
+        if (laser.activeSelf != active) {
+            laser.SetActive(active);
             var meshRenderer = laser.GetComponent<MeshRenderer>();
 
-            if (meshRenderer is not null && meshRenderer.enabled != (active && notEmpty))
-                meshRenderer.enabled = active && notEmpty;
+            if (meshRenderer is not null && meshRenderer.enabled != active)
+                meshRenderer.enabled = active;
         }
 
         if (playerHeldBy is null) return;
 
-        playerHeldBy.equippedUsableItemQE = active;
+        playerHeldBy.equippedUsableItemQE = true;
     }
 }

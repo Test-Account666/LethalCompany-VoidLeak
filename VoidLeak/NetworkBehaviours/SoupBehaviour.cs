@@ -27,9 +27,8 @@ public class SoupBehaviour : NetworkBehaviour {
         if (!collideAudioSource.isPlaying)
             collideAudioSource.Play();
 
-        if (this is {
-                IsHost: false,
-                IsServer: false,
+        if (this is not {
+                IsHost: true,
             }) return;
 
         var direction = other.transform.forward;
