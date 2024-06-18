@@ -1,5 +1,10 @@
 # VoidLeak Mod
 
+## 1.5.0
+
+\* Hopefully fixed all issues with Spawn Gun<br>
+\* Fixed explosion desync with Dev Manipulator<br>
+
 ## 1.4.0
 
 \+ Added Dev Manipulator, which is a very powerful item. Use with caution!<br>
