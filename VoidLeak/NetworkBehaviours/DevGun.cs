@@ -128,10 +128,9 @@ public class DevGun : PhysicsProp {
         var grabbableObject = hitInfo.collider.GetComponent<GrabbableObject>();
 
 
-        if (grabbableObject is not null)
-            return !grabbableObject.itemProperties.isScrap? null : grabbableObject;
+        if (grabbableObject is not null) return !grabbableObject.itemProperties.isScrap? null : grabbableObject;
 
-        Debug.LogError("No object???");
+        Plugin.logger.LogError("Dev gun found no object???");
         return null;
     }
 
@@ -154,7 +153,9 @@ public class DevGun : PhysicsProp {
 
     [ServerRpc(RequireOwnership = false)]
     public void UseDevGunServerRpc(NetworkObjectReference grabbableObjectReference) {
-        var grabbableObject = ((NetworkObject) grabbableObjectReference).GetComponent<GrabbableObject>();
+        var networkObject = (NetworkObject) grabbableObjectReference;
+
+        var grabbableObject = networkObject.GetComponent<GrabbableObject>();
 
         if (grabbableObject is null) {
             PlayNoObjectSoundClientRpc();
@@ -165,14 +166,17 @@ public class DevGun : PhysicsProp {
 
         var action = GenerateAction();
 
-        var networkObject = grabbableObject.GetComponent<NetworkObject>();
+        ExecuteAction(action, ref currentValue, grabbableObject, networkObject);
 
+        UseDevGunClientRpc((NetworkObjectReference) networkObject, currentValue);
+    }
+
+    private void ExecuteAction(DevGunAction action, ref int currentValue, GrabbableObject grabbableObject, NetworkObject networkObject) {
         switch (action) {
             case DevGunAction.DESTROY:
                 currentValue += 1600;
                 StartCoroutine(DelayedAction(() => {
-                    Landmine.SpawnExplosion(grabbableObject.transform.position, true, killRange: 0F, damageRange: 3F, nonLethalDamage: 25,
-                                            physicsForce: 1F);
+                    SpawnExplosionClientRpc(grabbableObject.transform.position);
 
                     networkObject.Despawn();
                     Destroy(grabbableObject.gameObject);
@@ -193,8 +197,12 @@ public class DevGun : PhysicsProp {
             default:
                 throw new ArgumentOutOfRangeException(nameof(action), action, "Is not implemented, yet???");
         }
+    }
 
-        UseDevGunClientRpc((NetworkObjectReference) networkObject, currentValue);
+    [ClientRpc]
+    // ReSharper disable once MemberCanBeMadeStatic.Local
+    private void SpawnExplosionClientRpc(Vector3 position) {
+        Landmine.SpawnExplosion(position, true, killRange: .5F, damageRange: 3F, nonLethalDamage: 25, physicsForce: 1F);
     }
 
     private static IEnumerator DelayedAction(Action action) {
