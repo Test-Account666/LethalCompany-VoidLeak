@@ -1,5 +1,9 @@
 # VoidLeak Mod
 
+## 1.6.0
+
+\+ Add MoreCompany cosmetics
+
 ## 1.5.0
 
 \* Hopefully fixed all issues with Spawn Gun<br>
