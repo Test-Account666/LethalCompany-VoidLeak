@@ -2,10 +2,10 @@
 
 Adds items from BONEWORKS/BONELAB as scrap.
 
+Also adds some MoreCompany cosmetics :)
+
 This is a fork from the original [VoidLeak](https://thunderstore.io/c/lethal-company/p/SoulWithMae/VoidLeak/) mod.
 Credits go to `SoulWithMae` :)
-
-The MoreCompany cosmetics are not yet available.
 
 <details>
     <summary>Images:</summary>
