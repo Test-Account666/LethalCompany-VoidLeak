@@ -16,6 +16,7 @@ namespace VoidLeak;
 [BepInDependency("evaisa.lethallib")]
 [BepInDependency("imabatby.lethallevelloader", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("BMX.LobbyCompatibility", BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency("me.swipez.melonloader.morecompany", BepInDependency.DependencyFlags.SoftDependency)]
 public class Plugin : BaseUnityPlugin {
     public static ManualLogSource logger = null!;
     private static Harmony? _harmony;
