@@ -6,9 +6,9 @@
         <AssemblyName>TestAccount666.VoidLeak</AssemblyName>
         <Description>AssetWarehouse had a breach. (BONELAB/BONEWORKS scrap items)</Description>
         <Source>https://github.com/Test-Account666/LethalCompany-VoidLeak/</Source>
-        <Version>1.5.0</Version>
-        <AssemblyVersion>1.5.0</AssemblyVersion>
-        <FileVersion>1.5.0</FileVersion>
+        <Version>1.6.0</Version>
+        <AssemblyVersion>1.6.0</AssemblyVersion>
+        <FileVersion>1.6.0</FileVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
         <Company>SoulWithMae</Company>
