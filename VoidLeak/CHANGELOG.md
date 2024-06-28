@@ -1,8 +1,12 @@
 # VoidLeak Mod
 
+## 1.7.0
+
+\+ Add Shoulder Skull cosmetic<br>
+
 ## 1.6.0
 
-\+ Add MoreCompany cosmetics
+\+ Add MoreCompany cosmetics<br>
 
 ## 1.5.0
 
