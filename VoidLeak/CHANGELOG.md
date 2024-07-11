@@ -1,12 +1,18 @@
 # VoidLeak Mod
 
+## 1.8.0
+
+\+ Added CoroutineGarbage Tank Cosmetic<br>
+\+ Added MemoryLeak Tank Cosmetic<br>
+\* Fixed ShoulderSkeleton Cosmetic<br>
+
 ## 1.7.0
 
-\+ Add Shoulder Skull cosmetic<br>
+\+ Added Shoulder Skull cosmetic<br>
 
 ## 1.6.0
 
-\+ Add MoreCompany cosmetics<br>
+\+ Added MoreCompany cosmetics<br>
 
 ## 1.5.0
 
