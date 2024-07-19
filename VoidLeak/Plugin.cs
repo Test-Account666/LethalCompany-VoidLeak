@@ -12,7 +12,7 @@ using static TestAccountCore.Netcode;
 namespace VoidLeak;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-[BepInDependency("TestAccount666.TestAccountCore", "1.0.0")]
+[BepInDependency("TestAccount666.TestAccountCore", "1.2.0")]
 [BepInDependency("evaisa.lethallib")]
 [BepInDependency("imabatby.lethallevelloader", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("BMX.LobbyCompatibility", BepInDependency.DependencyFlags.SoftDependency)]
