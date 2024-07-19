@@ -1,5 +1,11 @@
 # VoidLeak Mod
 
+## 1.9.0
+
+\* Fixed NullReferenceException caused by vanilla's way of handling material variants<br>
+\# Moved Material Variants to TestAccountCore<br>
+\# Updated TestAccountCore minimum version to 1.2.0<br>
+
 ## 1.8.0
 
 \+ Added CoroutineGarbage Tank Cosmetic<br>
