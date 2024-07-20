@@ -1,5 +1,10 @@
 # VoidLeak Mod
 
+## 1.9.1
+
+\* Fixed cosmetics having collision (again...)<br>
+\* Fixed scan node for Memory Dump and Particle Waste Barrels<br>
+
 ## 1.9.0
 
 \* Fixed NullReferenceException caused by vanilla's way of handling material variants<br>
