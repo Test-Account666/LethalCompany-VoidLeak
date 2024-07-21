@@ -1,5 +1,9 @@
 # VoidLeak Mod
 
+## 1.10.0
+
+\# I beat my arch nemesis: The Scan Node (Aka Soup Cans now have a scan node attached)<br>
+
 ## 1.9.1
 
 \* Fixed cosmetics having collision (again...)<br>
