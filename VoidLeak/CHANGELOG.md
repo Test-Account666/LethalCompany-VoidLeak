@@ -1,5 +1,10 @@
 # VoidLeak Mod
 
+## 1.11.0
+
+\+ Soup is now edible<br>
+\# Compressed all textures<br>
+
 ## 1.10.0
 
 \# I beat my arch nemesis: The Scan Node (Aka Soup Cans now have a scan node attached)<br>
