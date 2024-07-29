@@ -1,5 +1,9 @@
 # VoidLeak Mod
 
+## 1.11.1
+
+\* Fixed Dev Manipulator<br>
+
 ## 1.11.0
 
 \+ Soup is now edible<br>
