@@ -1,5 +1,9 @@
 # VoidLeak Mod
 
+## 1.11.2
+
+\* Fix LobbyCompatibility
+
 ## 1.11.1
 
 \* Fixed Dev Manipulator<br>
