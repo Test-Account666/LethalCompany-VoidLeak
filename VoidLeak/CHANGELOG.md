@@ -1,8 +1,15 @@
 # VoidLeak Mod
 
+## 1.12.0
+
+\* Maybe fixed Multi-Hit issues with crowbar?<br>
+\* Fixed networking issues with Soup Can<br>
+\* Fixed golden Apollo texture<br>
+\# Due to the changes I had to 1 up the minor version, since the previous version is incompatible with this one<br>
+
 ## 1.11.2
 
-\* Fix LobbyCompatibility
+\* Fix LobbyCompatibility<br>
 
 ## 1.11.1
 
