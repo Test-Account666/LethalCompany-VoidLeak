@@ -61,13 +61,13 @@ public class SpawnGun : GrabbableObject {
 
     [ClientRpc]
     private void SpawnSoupClientRpc(Vector3 position) {
-        var soupObject = Instantiate(spawnObject, position, Quaternion.identity);
-
         insertedBattery.charge -= 0.1f;
 
         if (insertedBattery.charge <= 0) SetActive(false);
 
         if (!IsHost) return;
+
+        var soupObject = Instantiate(spawnObject, position, Quaternion.identity);
 
         var networkObject = soupObject.GetComponent<NetworkObject>();
 

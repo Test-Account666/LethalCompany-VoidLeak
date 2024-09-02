@@ -19,12 +19,11 @@ public class DestroyOnTimer : NetworkBehaviour {
     private IEnumerator Destroy(GameObject obj, float time) {
         yield return new WaitForSeconds(time);
 
-        if (IsHost || IsServer) {
-            var networkObject = obj.GetComponent<NetworkObject>();
+        if (!IsHost && !IsServer) yield break;
 
-            networkObject?.Despawn();
-        }
+        var networkObject = obj.GetComponent<NetworkObject>();
 
+        networkObject?.Despawn();
         Object.Destroy(obj);
     }
 }

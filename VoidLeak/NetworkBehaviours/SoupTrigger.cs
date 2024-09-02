@@ -83,7 +83,9 @@ public class SoupTrigger : NetworkBehaviour {
     public void EatSoupClientRpc() {
         //TODO: Play sound
 
-        if (IsHost) networkObject?.Despawn();
+        if (!IsHost && !IsServer) return;
+
+        networkObject?.Despawn();
 
         Destroy(parentObject);
     }
