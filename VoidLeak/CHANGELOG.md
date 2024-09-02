@@ -1,5 +1,9 @@
 # VoidLeak Mod
 
+## 1.12.1
+
+\* Actually fixed Soup Can - Ooops<br>
+
 ## 1.12.0
 
 \* Maybe fixed Multi-Hit issues with crowbar?<br>
