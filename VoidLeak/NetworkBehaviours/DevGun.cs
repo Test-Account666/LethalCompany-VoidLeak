@@ -53,9 +53,7 @@ public class DevGun : PhysicsProp {
     public override void ItemActivate(bool used, bool buttonDown = true) {
         base.ItemActivate(used, buttonDown);
 
-        if (animator is null) return;
-
-        if (playerHeldBy.playerEye is null) return;
+        if (!playerHeldBy || !playerHeldBy.playerEye) return;
 
         var grabbableObject = GetGrabbableObject();
 
