@@ -6,9 +6,9 @@
         <AssemblyName>TestAccount666.VoidLeak</AssemblyName>
         <Description>AssetWarehouse had a breach. (BONELAB/BONEWORKS scrap items)</Description>
         <Source>https://github.com/Test-Account666/LethalCompany-VoidLeak/</Source>
-        <Version>1.12.1</Version>
-        <AssemblyVersion>1.12.1</AssemblyVersion>
-        <FileVersion>1.12.1</FileVersion>
+        <Version>1.13.0</Version>
+        <AssemblyVersion>1.13.0</AssemblyVersion>
+        <FileVersion>1.13.0</FileVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
         <Company>SoulWithMae</Company>
@@ -98,12 +98,4 @@
             <HintPath>..\dependencies\TestAccount666.TestAccountCore.dll</HintPath>
         </Reference>
     </ItemGroup>
-
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <!-- Copy file on Windows -->
-        <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\..\VoidLeaks\Assets\LethalCompany\Mods&quot;" Condition="'$(OS)' == 'Windows_NT'"/>
-
-        <!-- Copy file on Unix/Linux -->
-        <Exec Command="cp -f $(TargetPath) $(ProjectDir)../../VoidLeaks/Assets/LethalCompany/Mods/" Condition="'$(OS)' == 'Unix'"/>
-    </Target>
 </Project>
