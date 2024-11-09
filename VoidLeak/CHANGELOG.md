@@ -1,5 +1,12 @@
 # VoidLeak Mod
 
+## 1.13.0
+
+\+ Added variants for the bottle<br>
+\* Fixed item rotations on drop<br>
+\# Reduced AssetBundle size by reducing texture size<br>
+\# I had to re-do a few things, so sounds may be off/different<br>
+
 ## 1.12.1
 
 \* Actually fixed Soup Can - Ooops<br>
