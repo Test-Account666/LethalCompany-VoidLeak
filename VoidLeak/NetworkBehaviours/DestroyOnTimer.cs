@@ -13,8 +13,7 @@ public class DestroyOnTimer : NetworkBehaviour {
     [Tooltip("The time to destroy the object.")]
     public float timeToDestroy = 5f;
 
-    private void Start() =>
-        StartCoroutine(Destroy(objectToDestroy == null? gameObject : objectToDestroy, timeToDestroy));
+    private void Start() => StartCoroutine(Destroy(objectToDestroy == null? gameObject : objectToDestroy, timeToDestroy));
 
     private IEnumerator Destroy(GameObject obj, float time) {
         yield return new WaitForSeconds(time);
