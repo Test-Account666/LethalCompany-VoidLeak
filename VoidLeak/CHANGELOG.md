@@ -1,5 +1,9 @@
 # VoidLeak Mod
 
+## 1.13.1
+
+\* Fixed Ice Axe blood particles<br>
+
 ## 1.13.0
 
 \+ Added variants for the bottle<br>
